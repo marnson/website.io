@@ -1,11 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0; url=https://www.gokcincinar.com/authors/maxfield-arnson/" />
-    <title>Redirecting...</title>
-  </head>
-  <body>
-    <p>Redirecting to <a href="https://www.gokcincinar.com/authors/maxfield-arnson/">Maxfield Arnson's profile</a>…</p>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting...</title>
+  <style>
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #console {
+      white-space: pre-wrap;
+      overflow: hidden;
+      border-right: 2px solid #c9d1d9;
+      padding-right: 0.25rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="console"></div>
+
+  <script>
+    const lines = [
+      'Locating Maxfield...',
+      'Profile found.',
+      'Redirecting...'
+    ];
+
+    const consoleDiv = document.getElementById('console');
+    let line = 0;
+    let char = 0;
+
+    function type() {
+      if (line < lines.length) {
+        if (char < lines[line].length) {
+          consoleDiv.textContent += lines[line][char++];
+          setTimeout(type, 40);
+        } else {
+          consoleDiv.textContent += '\n';
+          line++;
+          char = 0;
+          setTimeout(type, 500);
+        }
+      } else {
+        setTimeout(() => {
+          window.location.href = 'https://www.gokcincinar.com/authors/maxfield-arnson/';
+        }, 700);
+      }
+    }
+
+    type();
+  </script>
+</body>
 </html>
