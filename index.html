@@ -35,6 +35,7 @@
       'Redirecting...'
     ];
 
+    const delays = [1000, 1000, 1000]; // 1 second between lines
     const consoleDiv = document.getElementById('console');
     let line = 0;
     let char = 0;
@@ -48,12 +49,12 @@
           consoleDiv.textContent += '\n';
           line++;
           char = 0;
-          setTimeout(type, 500);
+          setTimeout(type, delays[line - 1]); // pause before next line
         }
       } else {
         setTimeout(() => {
           window.location.href = 'https://www.gokcincinar.com/authors/maxfield-arnson/';
-        }, 700);
+        }, 1200); // slight pause after last line
       }
     }
 
