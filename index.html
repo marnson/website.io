@@ -3,75 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Redirecting...</title>
+  <title>Redirecting</title>
   <style>
     body {
-      background: #0d1117;
-      color: #c9d1d9;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 1.2rem;
+      background: #ffffff;
+      color: #003459;
+      font-family: system-ui, sans-serif;
+      font-size: 1.1rem;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
       margin: 0;
     }
 
-    #console {
-      white-space: pre-wrap;
-      overflow: hidden;
-      border-right: 2px solid #c9d1d9;
-      padding-right: 0.25rem;
+    .fade {
+      opacity: 0;
+      animation: fadeIn 0.8s ease-in forwards;
+      text-align: center;
+    }
+
+    img {
+      width: 160px;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .note {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #4a6b7b;
     }
   </style>
 </head>
 <body>
-  <div id="console"></div> <!-- ← This line is crucial -->
+  <div class="fade">
+    <img src="ideas-logo.png" alt="IDEAS Lab logo" />
+    <div><strong>Maxfield Arnson</strong></div>
+    <div class="note">Redirecting to IDEAS Lab profile…</div>
+  </div>
 
   <script>
-    const lines = [
-      'maxarnson.com...',
-      'is redirecting you to...',
-      'The IDEAS Lab at the University of Michigan.'
-    ];
-
-    const delays = [1000, 1000, 1000]; // pause after each line
     const redirectURL = 'https://www.gokcincinar.com/authors/maxfield-arnson/';
-    const consoleDiv = document.getElementById('console');
+    let redirected = false;
 
-    let line = 0;
-    let char = 0;
-    let skipped = false;
-
-    function redirectNow() {
-      if (!skipped) {
-        skipped = true;
+    function go() {
+      if (!redirected) {
+        redirected = true;
         window.location.href = redirectURL;
       }
     }
 
-    function type() {
-      if (skipped) return;
-
-      if (line < lines.length) {
-        if (char < lines[line].length) {
-          consoleDiv.textContent += lines[line][char++];
-          setTimeout(type, 40);
-        } else {
-          consoleDiv.textContent += '\n';
-          line++;
-          char = 0;
-          setTimeout(type, delays[line - 1]);
-        }
-      } else {
-        setTimeout(redirectNow, 1200);
-      }
-    }
-
-    window.addEventListener('click', redirectNow);
-    window.addEventListener('keydown', redirectNow);
-
-    type();
+    setTimeout(go, 2000);
+    window.addEventListener('click', go);
+    window.addEventListener('keydown', go);
   </script>
 </body>
 </html>
