@@ -1,0 +1,198 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+    margin: 20px;
+}
+
+
+.component {
+    fill: gray;
+    stroke: black;
+    stroke-width: 2;
+}
+
+/* Active components will be updated with JS */
+.active {
+    fill: rgb(10, 192, 10);
+}
+
+.component {
+    cursor: pointer;
+}
+
+/* Makes the text invisible so you can click through it */
+text {
+    pointer-events: none;
+}
+
+/* Black base line (always shown) */
+.base-line {
+    stroke: black;
+    stroke-width: 3;
+    visibility: visible;
+}
+
+/* Dashed animated flow line */
+.flow-line {
+    stroke: limegreen;
+    stroke-width: 3;
+    stroke-dasharray: 6;
+    stroke-dashoffset: 0;
+    animation: flow 1s linear infinite;
+    visibility: hidden;
+    /* hidden unless activated */
+}
+
+@keyframes flow {
+    to {
+        stroke-dashoffset: -12;
+    }
+}
+
+.slider-wrapper {
+    width: 220px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.slider-wrapper label {
+    display: flex;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.slider-wrapper input[type="range"] {
+    width: 75%;
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 4px;
+    font-size: 14px;
+}
+
+.slider-labels span {
+    width: 33.33%;
+    text-align: center;
+}
+
+
+
+#clear-button {
+    margin-top: 20px;
+    padding: 6px 16px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+
+
+/*  */
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#propeller.spinning {
+    animation: spin 0.5s linear infinite;
+    transform-origin: center;
+    transform-box: fill-box;
+}
+
+#propeller.active polygon {
+    fill: rgb(10, 192, 10);
+}
+
+
+#layout-container {
+    display: flex;
+    align-items: center;
+    /* vertical centering */
+    justify-content: space-between;
+    gap: 40px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+#architecture-display {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    width: 33.33%;
+    max-width: 360px;
+    padding: 16px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+}
+
+#diagram-container {
+    width: 33.33%;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+#arch-name {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+#arch-desc {
+    font-size: 14px;
+    color: #444;
+}
+
+
+
+
+#controls {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+#controls label[for="transmissionpower"] {
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+@media (max-width: 800px) {
+    #layout-container {
+      flex-direction: column;
+      align-items: center;
+      padding: 0 16px;
+        box-sizing: border-box;
+    }
+  
+    #diagram-container,
+    #architecture-display {
+        flex: 1 1 0;
+        max-width: 600px;
+    }
+  }
+
+  @media (min-width: 801px) and (max-width: 1199px) {
+    #layout-container {
+      gap: 20px;
+      padding: 0 16px;
+      box-sizing: border-box;
+    }
+  
+    #diagram-container,
+    #architecture-display {
+      flex: 1 1 0;
+      max-width: 500px;
+    }
+  }
+  
