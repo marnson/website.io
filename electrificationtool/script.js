@@ -32,22 +32,18 @@ components.forEach(id => {
 });
 
 
-let transmissionFlag = 0; // 1 = up, 0 = none, -1 = down
+
 transmissionSlider.addEventListener("input", () => {
-    const val = parseInt(transmissionSlider.value);
+    updateLineFlow();
     const transmission = document.getElementById("transmission");
-    if (val > 55) {
-        transmissionFlag = 1;   // Upward flow
-        transmission.classList.add("active");
-    } else if (val < 45) {
-        transmissionFlag = -1;  // Downward flow
+
+    if (transmissionFlag !== 0) {
         transmission.classList.add("active");
     } else {
-        transmissionFlag = 0;   // No flow
         transmission.classList.remove("active");
     }
-    updateLineFlow();
-});
+}
+);
 
 
 clearButton.addEventListener("click", () => {
@@ -138,43 +134,35 @@ const transmissionNoPowerUP = document.getElementById("no-power-transmission-up"
 
 
 
+let batteryOn = 0;
+let turbineOn = 0;
+let turbineNodeOn = 0;
+let batteryNodeOn = 0;
+let motorOn = 0;
+let fuelOn = 0;
+let motorClick = 0;
+let turbineClick = 0;
+let propellerSpin = 0;
+let transmissionFlag = 0; // 1 = up, 0 = none, -1 = down
+
+function getTransmissionFlag() {
+    const val = parseInt(transmissionSlider.value);
+    if (val > 55) return 1;
+    if (val < 45) return -1;
+    return 0;
+}
 
 
 
-
-
-
-
-
-
-
-
-
-/* ---------------------------------------------------------------------------------------------------- */
-/* ----------------------------------LINE FLOW UPDATE FUNCTION----------------------------------------- */
-/* ---------------------------------------------------------------------------------------------------- */
-
-function updateLineFlow() {
-    const batteryOn = battery.classList.contains("active");
-    const fuelOn = fuel.classList.contains("active");
-    const turbineClick = turbine.classList.contains("active");
-    const motorClick = motor.classList.contains("active");
-
-    /* ---------------------------------------FUEL LINE------------------------------------------------------------- */
-    /* Fuel Line */
-    /* Very simple, just toggle visibility of flowing line and solid line depending on if the component is active */
-    if (fuelOn) {
-        baseLineFuelTurbine.style.visibility = "hidden";
-        flowLineFuelTurbine.style.visibility = "visible";
-    } else {
-        baseLineFuelTurbine.style.visibility = "visible";
-        flowLineFuelTurbine.style.visibility = "hidden";
-    }
-
+function updateFlags() {
+    transmissionFlag = getTransmissionFlag()
+    batteryOn = battery.classList.contains("active");
+    fuelOn = fuel.classList.contains("active");
+    turbineClick = turbine.classList.contains("active");
+    motorClick = motor.classList.contains("active");
 
     /* -------------------------------------------TURBINE ACTIVE STATUS--------------------------------------------------------- */
     /* Initialize Flag */
-    let turbineOn = 0
 
     /* If no fuel but user set turbine on, set flag to false and show no-power image*/
     if (!fuelOn && turbineClick) {
@@ -193,20 +181,13 @@ function updateLineFlow() {
     }
 
 
-    /* --------------------------------------------TURBINE AND TURBINE NODE LINE---------------------------------------------- */
-
-    if (turbineOn) {
-        baseLineTurbineTurbineNodeLink.style.visibility = "hidden";
-        flowLineTurbineTurbineNodeLink.style.visibility = "visible";
-    } else {
-        baseLineTurbineTurbineNodeLink.style.visibility = "visible";
-        flowLineTurbineTurbineNodeLink.style.visibility = "hidden";
-    }
-
     /* -------------------------------------------- TURBINE NODE FLAG---------------------------------------------- */
-    let turbineNodeOn = 0
     if (transmissionFlag === 1) {
+        if (batteryOn || turbineOn) {
         turbineNodeOn = 1
+        } else {
+        turbineNodeOn = 0
+        }
     } else if (transmissionFlag === 0) {
         if (turbineOn) {
             turbineNodeOn = 1
@@ -217,16 +198,12 @@ function updateLineFlow() {
         turbineNodeOn = 0
     }
 
-
-
-
-
-
     /* -------------------------------------------- BATTERY NODE FLAG---------------------------------------------- */
-    let batteryNodeOn = 0
     if (transmissionFlag === -1) {
         if (turbineOn || batteryOn) {
             batteryNodeOn = 1
+        } else {
+            batteryNodeOn = 0
         }
     } else if (transmissionFlag === 0) {
         if (batteryOn) {
@@ -235,11 +212,77 @@ function updateLineFlow() {
             batteryNodeOn = 0
         }
     } else if (transmissionFlag === 1) {
-        batteryNodeOn = 0
+        if (batteryOn) {
+            if (batteryBypass.checked) {
+                batteryNodeOn = 1
+            } else if (!batteryBypass.checked) {
+                batteryNodeOn = 0
+            }
+        }
+    }
+
+    /* ---------------------------------------MOTOR ACTIVE STATUS------------------------------------------------------------- */
+
+    /* If no fuel but user set turbine on, set flag to false and show no-power image*/
+    if (!batteryNodeOn && motorClick) {
+        motorOn = 0
+        motorNoPower.style.visibility = "visible";
+    }
+    /* If fuel and user set turbine on, set flag to true and make sure no-power image is hidden*/
+    else if (batteryNodeOn && motorClick) {
+        motorOn = 1
+        motorNoPower.style.visibility = "hidden";
+    }
+    /* otherwise, set flag to false but we arent requesting power from it so no-power image is hidden*/
+    else {
+        motorOn = 0
+        motorNoPower.style.visibility = "hidden";
+    }
+
+    if (motorOn || turbineNodeOn === 1) {
+        propellerSpin = 1
+    } else {
+        propellerSpin = 0
+    }
+}
+
+
+
+
+
+
+
+/* ---------------------------------------------------------------------------------------------------- */
+/* ----------------------------------LINE FLOW UPDATE FUNCTION----------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+
+function updateLineFlow() {
+
+    updateFlags();
+    transmission
+
+
+    /* ---------------------------------------FUEL LINE------------------------------------------------------------- */
+    /* Fuel Line */
+    /* Very simple, just toggle visibility of flowing line and solid line depending on if the component is active */
+    if (fuelOn) {
+        baseLineFuelTurbine.style.visibility = "hidden";
+        flowLineFuelTurbine.style.visibility = "visible";
+    } else {
+        baseLineFuelTurbine.style.visibility = "visible";
+        flowLineFuelTurbine.style.visibility = "hidden";
     }
 
 
+    /* --------------------------------------------TURBINE AND TURBINE NODE LINE---------------------------------------------- */
 
+    if (turbineOn) {
+        baseLineTurbineTurbineNodeLink.style.visibility = "hidden";
+        flowLineTurbineTurbineNodeLink.style.visibility = "visible";
+    } else {
+        baseLineTurbineTurbineNodeLink.style.visibility = "visible";
+        flowLineTurbineTurbineNodeLink.style.visibility = "hidden";
+    }
 
 
 
@@ -248,7 +291,6 @@ function updateLineFlow() {
     if (transmissionFlag === 1) {
         transmissionNoPowerDOWN.style.visibility = "hidden";
         if (batteryOn) {
-            turbineNodeOn = 1
             transmissionNoPowerUP.style.visibility = "hidden";
             baseLineTransmissionTurbineNode.style.visibility = "hidden";
             flowDOWNLineTransmissionTurbineNode.style.visibility = "hidden";
@@ -256,15 +298,10 @@ function updateLineFlow() {
             baseLineTransmissionBatteryNode.style.visibility = "hidden";
             flowDOWNLineTransmissionBatteryNode.style.visibility = "hidden";
             flowUPLineTransmissionBatteryNode.style.visibility = "visible";
-            if (batteryBypass.checked) {
-                batteryNodeOn = 1
-            } else if (!batteryBypass.checked) {
-                batteryNodeOn = 0
-            }
+
         } else {
 
             if (turbineOn) {
-                turbineNodeOn = 1
                 transmissionNoPowerUP.style.visibility = "visible";
                 baseLineTransmissionTurbineNode.style.visibility = "visible";
                 flowDOWNLineTransmissionTurbineNode.style.visibility = "hidden";
@@ -274,7 +311,6 @@ function updateLineFlow() {
                 flowUPLineTransmissionBatteryNode.style.visibility = "hidden";
             }
             else {
-                turbineNodeOn = 0
                 transmissionNoPowerUP.style.visibility = "visible";
                 baseLineTransmissionTurbineNode.style.visibility = "visible";
                 flowDOWNLineTransmissionTurbineNode.style.visibility = "hidden";
@@ -381,25 +417,7 @@ function updateLineFlow() {
         flowLineBatteryNodeMotor.style.visibility = "hidden";
     }
 
-    /* ---------------------------------------MOTOR ACTIVE STATUS------------------------------------------------------------- */
-    /* Initialize Flag */
-    let motorOn = 0
 
-    /* If no fuel but user set turbine on, set flag to false and show no-power image*/
-    if (!batteryNodeOn && motorClick) {
-        motorOn = 0
-        motorNoPower.style.visibility = "visible";
-    }
-    /* If fuel and user set turbine on, set flag to true and make sure no-power image is hidden*/
-    else if (batteryNodeOn && motorClick) {
-        motorOn = 1
-        motorNoPower.style.visibility = "hidden";
-    }
-    /* otherwise, set flag to false but we arent requesting power from it so no-power image is hidden*/
-    else {
-        motorOn = 0
-        motorNoPower.style.visibility = "hidden";
-    }
 
     /* ---------------------------------------TURBINE NODE THRUST NODE LINE------------------------------------------------------------- */
     if (turbineNodeOn) {
@@ -428,9 +446,9 @@ function updateLineFlow() {
     }
 
     /* ---------------------------------------THRUST NODE PROPELLER LINE AND PROPELLER SPIN------------------------------------------------------------- */
-    let propellerSpin = 0
-    if (motorOn || turbineNodeOn === 1) {
-        propellerSpin = 1
+
+
+    if (propellerSpin) {
         baseLineThrustLinkProp.style.visibility = "hidden";
         flowLineThrustLinkProp.style.visibility = "visible";
     } else {
@@ -458,8 +476,18 @@ function updateLineFlow() {
 
 
     } else if (fuelOn && turbineOn && transmissionFlag === 1 && batteryOn) {
-        archName.textContent = "Architecture: Parallel Hybrid";
-        archDesc.textContent = "desc needed";
+        if (batteryBypass.checked) {
+            if (motorClick) {
+                archName.textContent = "Architecture: Series-Parallel Hybrid";
+                archDesc.textContent = "A gas turbine, powered by jet fuel and assisted by a transmission, provides propulsive power to the aircraft. A battery also provides power to an electric motor, which then spin a fan or a propeller. The use of both mechanical and electrical propulsion is what puts the \"parallel\" in this series-parallel configuration.";
+                archNote.innerHTML += "<br> &bull; Differences between shaft or electrical connections can distinguish different variants of series-parallel hybrid architectures."
+
+            } else {
+                archName.textContent = "Architecture: Parallel Hybrid";
+                archDesc.textContent = "A gas turbine, powered by jet fuel, spins a shaft assisted by battery powered transmission.";
+                archNote.innerHTML += "<br> &bull; In this architecture, the transmission acts as an electric motor. Differences between shaft or electrical connections can distinguish different variants of parallel hybrid architectures."
+            }
+        }
 
 
     } else if (fuelOn && turbineOn && transmissionFlag === -1 && motorClick) {
@@ -477,6 +505,7 @@ function updateLineFlow() {
                 if (turbineBypass.checked) {
                     archName.textContent = "Architecture: Series-Parallel Hybrid";
                     archDesc.textContent = "A gas turbine, powered by jet fuel, spins a transmission, which supplies power to an electric motor. A battery also provides power to the electric motor. The electric motor then spins either a fan or a propeller. The gas turbine also provides direct propulsive power to the aircraft. The use of both mechanical and electrical propulsion is what puts the \"parallel\" in this series-parallel configuration.";
+                    archNote.innerHTML += "<br> &bull; Differences between shaft or electrical connections can distinguish different variants of series-parallel hybrid architectures."
 
                 } else {
                     archName.textContent = "Architecture: Series Hybrid";
@@ -510,19 +539,21 @@ function updateLineFlow() {
         if (batteryOn) {
             archNote.innerHTML += "<br> &bull; Battery is adding unneccessary weight to the propulsion system."
         }
-    } else if (fuelOn && turbineOn && batteryOn && motorOn) {
+    } else if (fuelOn && turbineOn && batteryOn && motorOn && transmissionFlag == 0) {
         archName.textContent = "Architecture: Parallel Hybrid";
-        archDesc.textContent = "desc needed";
+        archDesc.textContent = "A gas turbine, powered by jet fuel, spins a shaft assisted by battery powered electric motor.";
+        archNote.innerHTML += "<br> &bull; Differences between shaft or electrical connections can distinguish different variants of parallel hybrid architectures."
     } else if (!fuelOn && !turbineOn && batteryOn && motorOn) {
         archName.textContent = "Architecture: Fully Electric";
-        archDesc.textContent = "desc needed";
+        archDesc.textContent = "A battery powers an electric motor, which spins a fan or a propeller.";
     } else if (!fuelOn && !turbineOn && batteryOn && transmissionFlag === 1) {
         archName.textContent = "Architecture: Fully Electric";
-        archDesc.textContent = "desc needed";
+        archDesc.textContent = "A battery powers an electric motor and a transmission, which can spin separate propulsors, or combine their power to spin any number of propulsors, which may be beneficial to make sure there are redundant systems for safety!";
+        archNote.innerHTML += "<br> &bull; In this architecture, the transmission acts as an electric motor."
     } else if (fuelOn && turbineOn && !batteryOn && transmissionFlag === 1) {
         archName.textContent = "Architecture: Conventional";
         archDesc.textContent = "A gas turbine, powered by jet fuel, spins a fan or a propeller. This is called a \"conventional\" architecture because it is the most commonnly used one in aircraft today.";
-            archNote.innerHTML += "<br> &bull; Transmission is adding unneccessary weight to the propulsion system."
+        archNote.innerHTML += "<br> &bull; Transmission is adding unneccessary weight to the propulsion system."
 
         if (motorClick) {
             archNote.innerHTML += "<br> &bull; Motor is adding unneccessary weight to the propulsion system."
@@ -568,6 +599,7 @@ function updateLineFlow() {
 
     if (!turbineClick && fuelOn) {
         archNote.innerHTML += "<br> &bull; Turbine is receiving power, but not sending it anywhere."
+        archNote.innerHTML += "<br> &bull; Unused fuel is adding unnecessary weight to the propulsion system."
     }
 
     if (batteryOn && transmissionFlag === 0 && batteryBypass.checked) {
