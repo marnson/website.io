@@ -1,5 +1,16 @@
 
-
+let batteryOn = 0;
+let turbineOn = 0;
+let turbineNodeOn = 0;
+let batteryNodeOn = 0;
+let motorOn = 0;
+let fuelOn = 0;
+let motorClick = 0;
+let turbineClick = 0;
+let propellerSpin = 0;
+let transmissionFlag = 0; // 1 = up, 0 = none, -1 = down
+let turbineBypassOn = 0
+let batteryBypassOn = 0
 /* ---------------------------------------------------------------------------------------------------- */
 /* -----------------------------------------GET COMPONENTS--------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------------- */
@@ -27,13 +38,14 @@ components.forEach(id => {
     const el = document.getElementById(id);
     el.addEventListener("click", () => {
         el.classList.toggle("active"); // toggle green fill
-        updateLineFlow();
+        requestAnimationFrame(updateLineFlow);
     });
 });
 
 
 
 transmissionSlider.addEventListener("input", () => {
+    transmissionFlag = getTransmissionFlag();
     updateLineFlow();
     const transmission = document.getElementById("transmission");
 
@@ -134,16 +146,7 @@ const transmissionNoPowerUP = document.getElementById("no-power-transmission-up"
 
 
 
-let batteryOn = 0;
-let turbineOn = 0;
-let turbineNodeOn = 0;
-let batteryNodeOn = 0;
-let motorOn = 0;
-let fuelOn = 0;
-let motorClick = 0;
-let turbineClick = 0;
-let propellerSpin = 0;
-let transmissionFlag = 0; // 1 = up, 0 = none, -1 = down
+
 
 function getTransmissionFlag() {
     const val = parseInt(transmissionSlider.value);
@@ -156,6 +159,8 @@ function getTransmissionFlag() {
 
 function updateFlags() {
     transmissionFlag = getTransmissionFlag()
+    turbineBypassOn = turbineBypass.checked;
+    batteryBypassOn = batteryBypass.checked;
     batteryOn = battery.classList.contains("active");
     fuelOn = fuel.classList.contains("active");
     turbineClick = turbine.classList.contains("active");
@@ -184,9 +189,9 @@ function updateFlags() {
     /* -------------------------------------------- TURBINE NODE FLAG---------------------------------------------- */
     if (transmissionFlag === 1) {
         if (batteryOn || turbineOn) {
-        turbineNodeOn = 1
+            turbineNodeOn = 1
         } else {
-        turbineNodeOn = 0
+            turbineNodeOn = 0
         }
     } else if (transmissionFlag === 0) {
         if (turbineOn) {
@@ -195,7 +200,14 @@ function updateFlags() {
             turbineNodeOn = 0
         }
     } else if (transmissionFlag === -1) {
-        turbineNodeOn = 0
+        if (turbineOn) {
+            if (turbineBypassOn) {
+                turbineNodeOn = 1
+            }
+            else if (!turbineBypassOn) {
+                turbineNodeOn = 0
+            }
+        }
     }
 
     /* -------------------------------------------- BATTERY NODE FLAG---------------------------------------------- */
@@ -213,11 +225,13 @@ function updateFlags() {
         }
     } else if (transmissionFlag === 1) {
         if (batteryOn) {
-            if (batteryBypass.checked) {
+            if (batteryBypassOn) {
                 batteryNodeOn = 1
-            } else if (!batteryBypass.checked) {
+            } else if (!batteryBypassOn) {
                 batteryNodeOn = 0
             }
+        } else {
+            batteryNodeOn = 0
         }
     }
 
@@ -259,7 +273,14 @@ function updateFlags() {
 function updateLineFlow() {
 
     updateFlags();
-    transmission
+
+    transmissionFlag = getTransmissionFlag()
+    turbineBypassOn = turbineBypass.checked;
+    batteryBypassOn = batteryBypass.checked;
+    batteryOn = battery.classList.contains("active");
+    fuelOn = fuel.classList.contains("active");
+    turbineClick = turbine.classList.contains("active");
+    motorClick = motor.classList.contains("active");
 
 
     /* ---------------------------------------FUEL LINE------------------------------------------------------------- */
@@ -344,13 +365,11 @@ function updateLineFlow() {
             flowDOWNLineTransmissionBatteryNode.style.visibility = "visible";
             flowUPLineTransmissionBatteryNode.style.visibility = "hidden";
 
-            if (turbineBypass.checked) {
-                turbineNodeOn = 1
+            if (turbineBypassOn) {
                 baseLineTransmissionTurbineNode.style.visibility = "hidden";
                 flowDOWNLineTransmissionTurbineNode.style.visibility = "visible";
             }
-            else if (!turbineBypass.checked) {
-                turbineNodeOn = 0
+            else if (!turbineBypassOn) {
                 baseLineTransmissionTurbineNode.style.visibility = "hidden";
                 flowDOWNLineTransmissionTurbineNode.style.visibility = "visible";
             }
@@ -369,7 +388,7 @@ function updateLineFlow() {
 
     /* --------------------------------------------BATTERY AND BATTERY NODE LINE---------------------------------------------- */
     /* Battery and BatteryNode Line  */
-    if (!batteryOn && batteryBypass.checked) {
+    if (!batteryOn && batteryBypassOn) {
         if (transmissionFlag === -1 && turbineOn) {
             baseLineBatteryBatterynode.style.visibility = "hidden";
             flowLineCharge.style.visibility = "visible";
@@ -379,7 +398,7 @@ function updateLineFlow() {
             flowLineCharge.style.visibility = "hidden";
             flowLineBatteryBatterynode.style.visibility = "hidden";
         }
-    } else if (batteryOn && batteryBypass.checked) {
+    } else if (batteryOn && batteryBypassOn) {
         if (transmissionFlag === -1 && turbineOn) {
             baseLineBatteryBatterynode.style.visibility = "hidden";
             flowLineCharge.style.visibility = "visible";
@@ -389,7 +408,7 @@ function updateLineFlow() {
             flowLineCharge.style.visibility = "hidden";
             flowLineBatteryBatterynode.style.visibility = "visible";
         }
-    } else if (batteryOn && !batteryBypass.checked) {
+    } else if (batteryOn && !batteryBypassOn) {
         baseLineBatteryBatterynode.style.visibility = "hidden";
         flowLineCharge.style.visibility = "hidden";
         flowLineBatteryBatterynode.style.visibility = "visible";
@@ -405,7 +424,7 @@ function updateLineFlow() {
         baseLineBatteryNodeMotor.style.visibility = "hidden";
         flowLineBatteryNodeMotor.style.visibility = "visible";
         if (transmissionFlag === 0) {
-            if (batteryBypass.checked) {
+            if (batteryBypassOn) {
                 baseLineTransmissionBatteryNode.style.visibility = "hidden";
                 flowDOWNLineTransmissionBatteryNode.style.visibility = "hidden";
                 flowUPLineTransmissionBatteryNode.style.visibility = "visible";
@@ -424,7 +443,7 @@ function updateLineFlow() {
         baseLineTurbineNodeThrustLink.style.visibility = "hidden";
         flowLineTurbineNodeThrustLink.style.visibility = "visible";
         if (transmissionFlag === 0) {
-            if (turbineBypass.checked) {
+            if (turbineBypassOn) {
                 baseLineTransmissionTurbineNode.style.visibility = "hidden";
                 flowDOWNLineTransmissionTurbineNode.style.visibility = "visible";
                 flowUPLineTransmissionTurbineNode.style.visibility = "hidden";
@@ -476,7 +495,18 @@ function updateLineFlow() {
 
 
     } else if (fuelOn && turbineOn && transmissionFlag === 1 && batteryOn) {
-        if (batteryBypass.checked) {
+        if (batteryBypassOn) {
+            if (motorClick) {
+                archName.textContent = "Architecture: Series-Parallel Hybrid";
+                archDesc.textContent = "A gas turbine, powered by jet fuel and assisted by a transmission, provides propulsive power to the aircraft. A battery also provides power to an electric motor, which then spin a fan or a propeller. The use of both mechanical and electrical propulsion is what puts the \"parallel\" in this series-parallel configuration.";
+                archNote.innerHTML += "<br> &bull; Differences between shaft or electrical connections can distinguish different variants of series-parallel hybrid architectures."
+
+            } else {
+                archName.textContent = "Architecture: Parallel Hybrid";
+                archDesc.textContent = "A gas turbine, powered by jet fuel, spins a shaft assisted by battery powered transmission.";
+                archNote.innerHTML += "<br> &bull; In this architecture, the transmission acts as an electric motor. Differences between shaft or electrical connections can distinguish different variants of parallel hybrid architectures."
+            }
+        } else {
             if (motorClick) {
                 archName.textContent = "Architecture: Series-Parallel Hybrid";
                 archDesc.textContent = "A gas turbine, powered by jet fuel and assisted by a transmission, provides propulsive power to the aircraft. A battery also provides power to an electric motor, which then spin a fan or a propeller. The use of both mechanical and electrical propulsion is what puts the \"parallel\" in this series-parallel configuration.";
@@ -491,9 +521,9 @@ function updateLineFlow() {
 
 
     } else if (fuelOn && turbineOn && transmissionFlag === -1 && motorClick) {
-        if (!batteryBypass.checked) {
+        if (!batteryBypassOn) {
             if (!batteryOn) {
-                if (turbineBypass.checked) {
+                if (turbineBypassOn) {
                     archName.textContent = "Architecture: Partially Turbo-electric";
                     archDesc.textContent = "A gas turbine, powered by jet fuel, spins a transmission, which supplies power to an electric motor. The electric motor then spins either a fan or a propeller. The gas turbine also provides direct propulsive power to the aircraft. NASA's SUSAN concept is an excellent example of this architecture. A partially turbo-electric architecture is a type of series-parallel hybrid.";
                 } else { // Turbine Split Unchecked
@@ -502,7 +532,7 @@ function updateLineFlow() {
                 }
             }
             else { // Battery is on
-                if (turbineBypass.checked) {
+                if (turbineBypassOn) {
                     archName.textContent = "Architecture: Series-Parallel Hybrid";
                     archDesc.textContent = "A gas turbine, powered by jet fuel, spins a transmission, which supplies power to an electric motor. A battery also provides power to the electric motor. The electric motor then spins either a fan or a propeller. The gas turbine also provides direct propulsive power to the aircraft. The use of both mechanical and electrical propulsion is what puts the \"parallel\" in this series-parallel configuration.";
                     archNote.innerHTML += "<br> &bull; Differences between shaft or electrical connections can distinguish different variants of series-parallel hybrid architectures."
@@ -514,7 +544,7 @@ function updateLineFlow() {
             }
         } else { // Battery Bypass is active
             if (!batteryOn) {
-                if (turbineBypass.checked) {
+                if (turbineBypassOn) {
                     archName.textContent = "Architecture: Partially Turbo-electric";
                     archDesc.textContent = "A gas turbine, powered by jet fuel, spins a transmission, which supplies power to an electric motor, which spins a fan or a propeller. The gas turbine also provides direct propulsive power. NASA's SUSAN concept is an excellent example of this architecture. A partially turbo-electric architecture is a type of series-parallel hybrid.";
                 } else {
@@ -522,7 +552,7 @@ function updateLineFlow() {
                     archDesc.textContent = "A gas turbine, powered by jet fuel, spins a transmission, which supplies power to an electric motor, which spins a fan or a propeller. A fully turbo-electric architecture is a more specific version of a series hybrid.";
                 }
             } else { // Battery Inactive, but battery split active (charge mode)
-                if (turbineBypass.checked) {
+                if (turbineBypassOn) {
                     archName.textContent = "Architecture: Series-Parallel Hybrid (Charging Mode)";
                     archDesc.textContent = "A gas turbine, powered by jet fuel, spins a transmission, which supplies power to an electric motor. A battery also provides power to the electric motor. The electric motor then spins either a fan or a propeller. The gas turbine also provides direct propulsive power to the aircraft. The use of both mechanical and electrical propulsion is what puts the \"parallel\" in this series-parallel configuration.";
 
@@ -532,7 +562,7 @@ function updateLineFlow() {
                 }
             }
         }
-    } else if (fuelOn && turbineOn && transmissionFlag === -1 && !motorClick && turbineBypass.checked) {
+    } else if (fuelOn && turbineOn && transmissionFlag === -1 && !motorClick && turbineBypassOn) {
         archName.textContent = "Architecture: Conventional";
         archDesc.textContent = "A gas turbine, powered by jet fuel, spins a fan or a propeller. This is called a \"conventional\" architecture because it is the most commonnly used one in aircraft today.";
         archNote.innerHTML += "<br> &bull; Transmission is adding unneccessary weight to the propulsion system."
@@ -585,11 +615,11 @@ function updateLineFlow() {
         archNote.innerHTML += "<br> &bull; Electric motor is receiving power, but not sending it anywhere."
     }
 
-    if (batteryBypass.checked && transmissionFlag === -1) {
+    if (batteryBypassOn && transmissionFlag === -1) {
         archNote.innerHTML += "<br> &bull; Splitting battery power conflicts with downward transmission power flow. This configuration can be used to charge a battery!"
     }
 
-    if (batteryBypass.checked && transmissionFlag === -1 && !batteryOn) {
+    if (batteryBypassOn && transmissionFlag === -1 && !batteryOn) {
         archNote.innerHTML += "<br> &bull; Battery split and transmission settings expect a battery in this architecture, but none exists. It is recommended to either add the battery or turn off the split battery power setting."
     }
 
@@ -602,17 +632,17 @@ function updateLineFlow() {
         archNote.innerHTML += "<br> &bull; Unused fuel is adding unnecessary weight to the propulsion system."
     }
 
-    if (batteryOn && transmissionFlag === 0 && batteryBypass.checked) {
+    if (batteryOn && transmissionFlag === 0 && batteryBypassOn) {
         archNote.innerHTML += "<br> &bull; Transmission is receiving power, but not sending it anywhere."
 
     }
 
-    if (turbineOn && transmissionFlag === 1 && turbineBypass.checked) {
+    if (turbineOn && transmissionFlag === 1 && turbineBypassOn) {
         archNote.innerHTML += "<br> &bull; Turbine power split and transmission powerflow settings are conflicting."
 
     }
 
-    if (turbineOn && transmissionFlag === 0 && turbineBypass.checked) {
+    if (turbineOn && transmissionFlag === 0 && turbineBypassOn) {
         archNote.innerHTML += "<br> &bull; The turbine expects a transmission here, but isn't finding one."
 
     }
