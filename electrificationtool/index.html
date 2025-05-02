@@ -9,17 +9,24 @@
 
 <body>
     <h1>Aircraft Electrified Architecture Builder</h1>
-    <div id = intro-text>
-    <p>Click the fuel, turbine, battery, and electric motor to toggle their activation. Adjust the transmission power flow slider below the diagram to change the flow of power between electric and mechanical powertrains. If the transmission is active (in an up or down position), the battery and turbine will prioritize giving it power. The checkboxes allow the battery or turbine to send additional power beyond the transmission line. If the propulsor is powered, it will begin to spin! Explore different combinations of active and inactive components to create different propulsion system architectures. Use 'query mode' to pause exploration and learn more about each component.
-    </p>
+    <div id=intro-text>
+        <p>Click the fuel, turbine, battery, and electric motor to toggle their activation. Adjust the transmission
+            power slider next to the transmission to change the flow of power between electric and mechanical
+            powertrains. If the transmission is active (in an up or down position), the battery and turbine will
+            prioritize giving it power. The checkboxes allow the battery or turbine to send additional power beyond the
+            transmission line. If the propulsor is powered, it will begin to spin! Explore different combinations of
+            active and inactive components to create different propulsion system architectures. Use 'query mode' to
+            pause exploration and learn more about each component.
+        </p>
     </div>
-    
+
 
     <div id="layout-container">
         <!-- Architecture Diagram -->
         <div id="diagram-container">
             <!-- You can also link an external SVG file if needed -->
             <svg id="arch-diagram" width="600" height="400">
+
                 <!-- Simplified components with unique IDs -->
 
                 <!--- Fuel Box-->
@@ -57,65 +64,70 @@
 
                 <!--- Lines -->
                 <!--- Battery -> BatteryNode -->
-                <line id="line-battery-batterynode" x1="220" y1="260" x2="280" y2="260" class="base-line" />
-                <line id="flow-battery-batterynode" x1="220" y1="260" x2="280" y2="260" class="flow-line" />
-                <line id="charge-battery" x1="280" y1="260" x2="220" y2="260" class="flow-line" />
+                <line id="line-battery-batterynode" x1="220" y1="260" x2="280" y2="260" class="base-line cable" />
+                <line id="flow-battery-batterynode" x1="220" y1="260" x2="280" y2="260" class="flow-line cable" />
+                <line id="charge-battery" x1="280" y1="260" x2="220" y2="260" class="flow-line cable" />
 
 
                 <!--- Fuel -> Turbine -->
-                <line id="line-fuel-turbine" x1="100" y1="100" x2="140" y2="100" class="base-line" />
-                <line id="flow-fuel-turbine" x1="100" y1="100" x2="140" y2="100" class="flow-line" />
+                <line id="line-fuel-turbine" x1="100" y1="100" x2="140" y2="100" class="base-line pipe" />
+                <line id="flow-fuel-turbine" x1="100" y1="100" x2="140" y2="100" class="flow-line pipe" />
 
                 <!--- Turbine -> TurbineNode -->
-                <line id="line-turbine-turbinenode" x1="220" y1="100" x2="280" y2="100" class="base-line" />
-                <line id="flow-turbine-turbinenode" x1="220" y1="100" x2="280" y2="100" class="flow-line" />
+                <line id="line-turbine-turbinenode" x1="220" y1="100" x2="280" y2="100" class="base-line shaft" />
+                <line id="flow-turbine-turbinenode" x1="220" y1="100" x2="280" y2="100" class="flow-line shaft"
+                    stroke="url(#shaft-pattern)" />
 
                 <!--- TurbineNode -> Thrust Link -->
-                <g id="line-turbinenode-thrustlink" class="base-line">
+                <g id="line-turbinenode-thrustlink" class="base-line shaft">
                     <line x1="280" y1="100" x2="470" y2="100" />
                     <line x1="470" y1="100" x2="470" y2="180" />
                 </g>
 
-                <g id="flow-turbinenode-thrustlink" class="flow-line" style="visibility: hidden;">
+                <g id="flow-turbinenode-thrustlink" class="flow-line shaft" style="visibility: hidden;">
                     <line x1="280" y1="100" x2="470" y2="100" />
                     <line x1="470" y1="100" x2="470" y2="180" />
                 </g>
 
                 <!--- Transmission -> TurbineNode -->
-                <line id="line-transmission-turbinenode" x1="280" y1="100" x2="280" y2="160" class="base-line" />
-                <line id="flowDOWN-transmission-turbinenode" x1="280" y1="100" x2="280" y2="160" class="flow-line" />
-                <line id="flowUP-transmission-turbinenode" x1="280" y1="160" x2="280" y2="100" class="flow-line" />
+                <line id="line-transmission-turbinenode" x1="280" y1="100" x2="280" y2="160" class="base-line shaft" />
+                <line id="flowDOWN-transmission-turbinenode" x1="280" y1="100" x2="280" y2="160"
+                    class="flow-line shaft" />
+                <line id="flowUP-transmission-turbinenode" x1="280" y1="160" x2="280" y2="100"
+                    class="flow-line shaft" />
 
                 <!--- Transmission -> BatteryNode -->
-                <line id="line-transmission-batterynode" x1="280" y1="200" x2="280" y2="260" class="base-line" />
-                <line id="flowDOWN-transmission-batterynode" x1="280" y1="200" x2="280" y2="260" class="flow-line" />
-                <line id="flowUP-transmission-batterynode" x1="280" y1="260" x2="280" y2="200" class="flow-line" />
+                <line id="line-transmission-batterynode" x1="280" y1="200" x2="280" y2="260" class="base-line cable" />
+                <line id="flowDOWN-transmission-batterynode" x1="280" y1="200" x2="280" y2="260"
+                    class="flow-line cable" />
+                <line id="flowUP-transmission-batterynode" x1="280" y1="260" x2="280" y2="200"
+                    class="flow-line cable" />
 
                 <!--- Battery Node -> Motor -->
-                <line id="line-batterynode-motor" x1="280" y1="260" x2="340" y2="260" class="base-line" />
-                <line id="flow-batterynode-motor" x1="280" y1="260" x2="340" y2="260" class="flow-line" />
+                <line id="line-batterynode-motor" x1="280" y1="260" x2="340" y2="260" class="base-line cable" />
+                <line id="flow-batterynode-motor" x1="280" y1="260" x2="340" y2="260" class="flow-line cable" />
 
                 <!--- Motor -> Thrust Link -->
-                <g id="line-motor-thrustlink" class="base-line">
+                <g id="line-motor-thrustlink" class="base-line shaft">
                     <line x1="420" y1="260" x2="470" y2="260" />
                     <line x1="470" y1="260" x2="470" y2="180" />
                 </g>
 
-                <g id="flow-motor-thrustlink" class="flow-line" style="visibility: hidden;">
+                <g id="flow-motor-thrustlink" class="flow-line shaft" style="visibility: hidden;">
                     <line x1="420" y1="260" x2="470" y2="260" />
                     <line x1="470" y1="260" x2="470" y2="180" />
                 </g>
 
                 <!--- Thrust Link -> Propeller -->
-                <line id="line-thrustLink-prop" x1="470" y1="180" x2="520" y2="180" class="base-line" />
-                <line id="flow-thrustLink-prop" x1="470" y1="180" x2="520" y2="180" class="flow-line"
+                <line id="line-thrustLink-prop" x1="470" y1="180" x2="520" y2="180" class="base-line shaft" />
+                <line id="flow-thrustLink-prop" x1="470" y1="180" x2="520" y2="180" class="flow-line shaft"
                     style="visibility: hidden" />
 
 
 
 
                 <!---No Power Symbols -->
-                <image id="no-power-turbine" href="nopower.svg" x="107" y="85" width="25" height="25"
+                <image id="no-power-turbine" href="nofuel.svg" x="107" y="87" width="25" height="25"
                     visibility="hidden" />
                 <image id="no-power-motor" href="nopower.svg" x="297" y="247" width="25" height="25"
                     visibility="hidden" />
@@ -134,13 +146,7 @@
                 </div>
 
                 <div class="slider-wrapper">
-                    <label for="transmissionpower">Transmission Power Flow:</label>
                     <input type="range" id="transmissionpower" min="0" max="100" value="50" step="50">
-                    <div class="slider-labels">
-                        <span>Down</span>
-                        <span>Off</span>
-                        <span>Up</span>
-                    </div>
                 </div>
 
                 <div id="options" style="margin-top: 20px;">
