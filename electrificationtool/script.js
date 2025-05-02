@@ -702,11 +702,11 @@ function updateLineFlow() {
     }
 
     if (turbineClick && !fuelOn) {
-        archNote.innerHTML += "<br> &bull; Turbine is expecting power, but not receiving any."
+        archNote.innerHTML += "<br> &bull; Turbine is expecting fuel, but not receiving any."
     }
 
     if (!turbineClick && fuelOn) {
-        archNote.innerHTML += "<br> &bull; Turbine is receiving power, but not sending it anywhere."
+        archNote.innerHTML += "<br> &bull; Turbine is receiving fuel, but not sending power anywhere."
         archNote.innerHTML += "<br> &bull; Unused fuel is adding unnecessary weight to the propulsion system."
     }
 
