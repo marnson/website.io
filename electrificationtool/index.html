@@ -37,12 +37,17 @@
 
                 <!--- Transmission Box-->
                 <rect id="transmission" x="240" y="160" width="80" height="40" class="component" />
-                <text x="280" y="185" text-anchor="middle" fill="white" font-size="14">Transmission</text>
+                <text x="280" y="185" text-anchor="middle" fill="white" stroke="transparent" font-size="14">
+                    Transmission
+                </text>
 
                 <!--- Propeller Box (Centered) -->
-                <g id="propeller"">
-                <polygon points=" 520,140 525,160 520,180 515,160" fill="gray" stroke="black" stroke-width="2" />
-                <polygon points="520,180 525,200 520,220 515,200" fill="gray" stroke="black" stroke-width="2" />
+                <g id="propeller" class=component>
+                    <!-- Invisible hitbox -->
+                    <rect x="480" y="135" width="80" height="90" fill="transparent" stroke="transparent"
+                        pointer-events="visible" />
+                    <polygon points=" 520,140 525,160 520,180 515,160" fill="gray" stroke="black" stroke-width="2" />
+                    <polygon points="520,180 525,200 520,220 515,200" fill="gray" stroke="black" stroke-width="2" />
                 </g>
                 <text x="520" y="250" text-anchor="middle" fill="black" font-size="14">Propulsor</text>
 
@@ -120,6 +125,11 @@
 
             <!-- Sliders -->
             <div id="controls">
+
+                <div id="query-tooltip" class="query-tooltip" style="display: none;">
+                    Query mode active — click any component to learn more. Press 'esc' to deactivate.
+                </div>
+
                 <div class="slider-wrapper">
                     <label for="transmissionpower">Transmission Power Flow:</label>
                     <input type="range" id="transmissionpower" min="0" max="100" value="50" step="50">
@@ -143,6 +153,9 @@
                 </div>
 
                 <button id="clear-button">Reset Components</button>
+                <button id="query-button"> ? Query Mode</button>
+
+
 
             </div>
         </div>

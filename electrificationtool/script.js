@@ -11,6 +11,10 @@ let propellerSpin = 0;
 let transmissionFlag = 0; // 1 = up, 0 = none, -1 = down
 let turbineBypassOn = 0
 let batteryBypassOn = 0
+let queryMode = 0;
+let activeInfoBox = null;
+
+
 /* ---------------------------------------------------------------------------------------------------- */
 /* -----------------------------------------GET COMPONENTS--------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------------- */
@@ -30,21 +34,41 @@ const archName = document.getElementById("arch-name");
 const archDesc = document.getElementById("arch-desc");
 const archNote = document.getElementById("arch-note");
 
+//Query Mode
+const queryButton = document.getElementById("query-button")
+
+const interactiveControls = [
+    transmissionSlider,
+    turbineBypass,
+    batteryBypass,
+    clearButton,
+];
+
+
 /* ---------------------------------------------------------------------------------------------------- */
 /* -----------------------------------------Event Listeners--------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------------- */
 
 components.forEach(id => {
     const el = document.getElementById(id);
+
+
     el.addEventListener("click", () => {
-        el.classList.toggle("active"); // toggle green fill
-        requestAnimationFrame(updateLineFlow);
+        if (queryMode) {
+            //handleQueryClick(el, id);
+        } else {
+            el.classList.toggle("active"); // toggle green fill
+            requestAnimationFrame(updateLineFlow);
+        }
     });
 });
 
 
 
+
 transmissionSlider.addEventListener("input", () => {
+    if (queryMode) return;
+
     transmissionFlag = getTransmissionFlag();
     updateLineFlow();
     const transmission = document.getElementById("transmission");
@@ -59,6 +83,7 @@ transmissionSlider.addEventListener("input", () => {
 
 
 clearButton.addEventListener("click", () => {
+    if (queryMode) return;
     // Turn off all components
     components.forEach(id => {
         document.getElementById(id).classList.remove("active");
@@ -80,12 +105,49 @@ clearButton.addEventListener("click", () => {
 
 
 turbineBypass.addEventListener("change", () => {
+    if (queryMode) return;
     updateLineFlow();
 });
 
 batteryBypass.addEventListener("change", () => {
+    if (queryMode) return;
     updateLineFlow();
 });
+
+
+const tooltip = document.getElementById("query-tooltip");
+
+
+queryButton.addEventListener("click", () => {
+    queryMode = !queryMode;
+
+    // Update cursor style
+    document.body.classList.toggle("query-mode", queryMode);
+
+    interactiveControls.forEach(el => {
+        el.classList.toggle("query-lock", queryMode);
+    });
+
+    tooltip.style.display = queryMode ? "block" : "none";
+    
+    // Close any open box if turning off
+    if (!queryMode && activeInfoBox) {
+        activeInfoBox.style.display = "none";
+        activeInfoBox = null;
+    }
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && queryMode) {
+        queryButton.click();
+        if (activeInfoBox) {
+            activeInfoBox.style.display = "none";
+            activeInfoBox = null;
+        }
+    }
+});
+
+
 
 
 /* ---------------------------------------------------------------------------------------------------- */
