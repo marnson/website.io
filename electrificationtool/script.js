@@ -589,8 +589,22 @@ function updateLineFlow() {
             archNote.innerHTML += "<br> &bull; Motor is adding unneccessary weight to the propulsion system."
         }
 
+    } else if (fuelOn && !turbineOn && batteryOn && transmissionFlag === 1) {
+
+        if (batteryBypass){
+        archName.textContent = "Architecture: Fully Electric";
+        archDesc.textContent = "A battery powers an electric motor and a transmission, which can spin separate propulsors, or combine their power to spin any number of propulsors, which may be beneficial to make sure there are redundant systems for safety!";
+        archNote.innerHTML += "<br> &bull; In this architecture, the transmission acts as an electric motor."
+        } else {
+            archName.textContent = "Architecture: Fully Electric";
+            archDesc.textContent = "A battery powers a transmission, which spins a fan or a propeller.";
+            archNote.innerHTML += "<br> &bull; In this architecture, the transmission acts as an electric motor."
+        }
 
 
+    } else if (fuelOn && !turbineOn && batteryOn && transmissionFlag === 0) {
+        archName.textContent = "Architecture: Fully Electric";
+        archDesc.textContent = "A battery powers an electric motor, which spins a fan or a propeller.";
 
 
     } else {
