@@ -22,6 +22,7 @@
 
 
     <div id="layout-container">
+        
         <!-- Architecture Diagram -->
         <div id="diagram-container">
             <!-- You can also link an external SVG file if needed -->
@@ -47,7 +48,7 @@
 
                 <!--- Transmission Box-->
                 <rect id="transmission" x="240" y="160" width="80" height="40" class="component" />
-                <text x="280" y="185" text-anchor="middle" fill="white" stroke="transparent" font-size="14">
+                <text x="280" y="185" text-anchor="middle" fill="white" stroke="transparent" font-size="12">
                     Transmission
                 </text>
 
@@ -136,48 +137,74 @@
                 <image id="no-power-transmission-up" href="nopower.svg" x="267" y="217" width="25" height="25"
                     visibility="hidden" />
 
+
+
+                <foreignObject x="170" y="62" width="220" height="100">
+                    <text class="turbine-bypass-label" text-anchor="middle" fill="black" font-size="10">
+                        Split turbine power?
+                    </text>
+                    <div class="checkbox-container-turbine">
+                        <input type="checkbox" id="turbine-bypass" />
+                    </div>
+                </foreignObject>
+
+                <foreignObject x="170" y="265" width="220" height="40">
+                    <div class="checkbox-container-battery">
+                        <input type="checkbox" id="battery-bypass" />
+                    </div>
+                    <text class="battery-bypass-label" text-anchor="middle" fill="black" font-size="10">
+                        Split battery power?
+                    </text>
+                </foreignObject>
+
+                <foreignObject x="285" y="130" width="100" height="100">
+                    <div style="display: flex; align-items: center; justify-content: center; height: 100%;" <div
+                        class="slider-wrapper">
+                        <input type="range" id="transmissionpower" min="0" max="100" value="50" step="50"
+                            style="width: 100%;" />
+                    </div>
+
+                </foreignObject>
+
+                <foreignObject x="300" y="290" width="100" height="100">
+                    <div id="controls">
+                        <button id="query-button"> ? Query Mode</button>
+                    </div>
+                </foreignObject>
+
+                <foreignObject x="147" y="285" width="100" height="100">
+                    <div id="controls">
+                        <button id="clear-button">Reset Components</button>
+                    </div>
+                </foreignObject>
+
+                <foreignObject x="140" y="370" width="270" height="100">
+                    <div id="query-tooltip" class="query-tooltip" style="display: none;">
+                        Query mode active — click any component to learn more. Press 'esc' to deactivate.
+                    </div>
+                </foreignObject>
             </svg>
-
-            <!-- Sliders -->
-            <div id="controls">
-
-                <div id="query-tooltip" class="query-tooltip" style="display: none;">
-                    Query mode active — click any component to learn more. Press 'esc' to deactivate.
-                </div>
-
-                <div class="slider-wrapper">
-                    <input type="range" id="transmissionpower" min="0" max="100" value="50" step="50">
-                </div>
-
-                <div id="options" style="margin-top: 20px;">
-                    <label>
-                        <input type="checkbox" id="turbine-bypass">
-                        Split Turbine Power
-                    </label>
-                    <br>
-                    <label>
-                        <input type="checkbox" id="battery-bypass">
-                        Split Battery Power
-                    </label>
-                </div>
-
-                <button id="clear-button">Reset Components</button>
-                <button id="query-button"> ? Query Mode</button>
-
-
-
-            </div>
         </div>
+
+
 
 
         <!-- Right: Architecture Info -->
         <div id="architecture-display">
             <h2 id="arch-name">Architecture: —</h2>
             <p id="arch-desc">Select components and set power flow to define an architecture.</p>
-            <p id="arch-note" class="note"></p> <!-- This is the new note field -->
+            <p id="arch-note" class="note">Note(s):</p> <!-- This is the new note field -->
         </div>
-
     </div>
+
+
+
+
+
+
+
+
+
 
 
 
