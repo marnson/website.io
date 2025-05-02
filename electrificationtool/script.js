@@ -129,7 +129,7 @@ queryButton.addEventListener("click", () => {
     });
 
     tooltip.style.display = queryMode ? "block" : "none";
-    
+
     // Close any open box if turning off
     if (!queryMode && activeInfoBox) {
         activeInfoBox.style.display = "none";
@@ -269,6 +269,8 @@ function updateFlags() {
             else if (!turbineBypassOn) {
                 turbineNodeOn = 0
             }
+        } else {
+            turbineNodeOn = 0
         }
     }
 
