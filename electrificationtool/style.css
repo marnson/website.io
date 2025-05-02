@@ -268,3 +268,9 @@ button {
 .query-mode .slider-labels span {
   opacity: 0.4;
 }
+
+#intro-text {
+    max-width: 1210px;
+    margin: 0 auto 24px;
+    line-height: 1.4;
+  }
