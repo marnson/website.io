@@ -711,7 +711,7 @@ function updateLineFlow() {
     }
 
     if (!motorClick && batteryNodeOn) {
-        archNote.innerHTML += "<br> &bull; Electric motor is receiving power, but not sending it anywhere."
+        archNote.innerHTML += "<br> &bull; The architecture expects an electric motor here, but isn't finding one."
     }
 
     if (batteryBypassOn && transmissionFlag === -1) {
@@ -728,7 +728,7 @@ function updateLineFlow() {
     }
 
     if (!turbineClick && fuelOn) {
-        archNote.innerHTML += "<br> &bull; Turbine is receiving fuel, but not sending power anywhere."
+        archNote.innerHTML += "<br> &bull; The architecture expects a turbine here, but isn't finding one."
         archNote.innerHTML += "<br> &bull; Unused fuel is adding unnecessary weight to the propulsion system."
     }
 
