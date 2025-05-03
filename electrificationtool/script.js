@@ -653,21 +653,22 @@ function updateLineFlow() {
         archName.textContent = "Architecture: Parallel Hybrid";
         archDesc.textContent = "A gas turbine, powered by jet fuel, spins a shaft assisted by battery powered electric motor.";
         archNote.innerHTML += "<br> &bull; Differences between shaft or electrical connections can distinguish different variants of parallel hybrid architectures."
-    } else if (!fuelOn && !turbineOn && batteryOn && motorOn) {
+    } else if (!fuelOn && !turbineOn && batteryOn && motorOn && transmissionFlag !== 1) {
         archName.textContent = "Architecture: Fully Electric";
         archDesc.textContent = "A battery powers an electric motor, which spins a fan or a propeller.";
-    } else if (!fuelOn && !turbineOn && batteryOn && transmissionFlag === 1) {
+    } else if (!fuelOn && !turbineOn && batteryOn && motorOn && transmissionFlag == 1) {
         archName.textContent = "Architecture: Fully Electric";
         archDesc.textContent = "A battery powers an electric motor and a transmission, which can spin separate propulsors, or combine their power to spin any number of propulsors, which may be beneficial to make sure there are redundant systems for safety!";
+        archNote.innerHTML += "<br> &bull; In this architecture, the transmission acts as an electric motor."
+    }else if (!fuelOn && !turbineOn && batteryOn && !motorOn && transmissionFlag == 1) {
+        archName.textContent = "Architecture: Fully Electric";
+        archDesc.textContent = "A battery powers a transmission, which spins a fan or a propeller.";
         archNote.innerHTML += "<br> &bull; In this architecture, the transmission acts as an electric motor."
     } else if (fuelOn && turbineOn && !batteryOn && transmissionFlag === 1) {
         archName.textContent = "Architecture: Conventional";
         archDesc.textContent = "A gas turbine, powered by jet fuel, spins a fan or a propeller. This is called a \"conventional\" architecture because it is the most commonnly used one in aircraft today.";
-        archNote.innerHTML += "<br> &bull; Transmission is adding unneccessary weight to the propulsion system."
 
-        if (motorClick) {
-            archNote.innerHTML += "<br> &bull; Motor is adding unneccessary weight to the propulsion system."
-        }
+
 
     } else if (fuelOn && !turbineOn && batteryOn && transmissionFlag === 1) {
 
@@ -692,12 +693,16 @@ function updateLineFlow() {
         archDesc.textContent = "Select components and set power flow to define an architecture.";
     }
 
+
+
     if (transmissionFlag == 1 && !batteryOn) {
         archNote.innerHTML += "<br> &bull; Transmission is expecting power, but not receiving any."
+        archNote.innerHTML += "<br> &bull; Transmission is adding unneccessary weight to the propulsion system."
     }
 
     if (transmissionFlag == -1 && !turbineOn) {
         archNote.innerHTML += "<br> &bull; Transmission is expecting power, but not receiving any."
+        archNote.innerHTML += "<br> &bull; Transmission is adding unneccessary weight to the propulsion system."
     }
 
     if (motorClick && !batteryNodeOn) {
@@ -719,6 +724,7 @@ function updateLineFlow() {
 
     if (turbineClick && !fuelOn) {
         archNote.innerHTML += "<br> &bull; Turbine is expecting fuel, but not receiving any."
+        archNote.innerHTML += "<br> &bull; Turbine is adding unnecessary weight to the propulsion system."
     }
 
     if (!turbineClick && fuelOn) {
@@ -727,7 +733,7 @@ function updateLineFlow() {
     }
 
     if (batteryOn && transmissionFlag === 0 && batteryBypassOn) {
-        archNote.innerHTML += "<br> &bull; Transmission is receiving power, but not sending it anywhere."
+        archNote.innerHTML += "<br> &bull; The battery expects a transmission here, but isn't finding one."
 
     }
 
