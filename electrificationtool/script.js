@@ -13,13 +13,15 @@ let turbineBypassOn = 0
 let batteryBypassOn = 0
 let queryMode = 0;
 let activeInfoBox = null;
+let queryComponent = "";
+let queryDescription = "";
 
 
 /* ---------------------------------------------------------------------------------------------------- */
 /* -----------------------------------------GET COMPONENTS--------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------------- */
 // Get all components
-const components = ["battery", "motor", "fuel", "turbine"];
+const basicComponents = ["battery", "motor", "fuel", "turbine"];
 const propeller = document.getElementById("propeller");
 
 
@@ -44,21 +46,35 @@ const interactiveControls = [
     clearButton,
 ];
 
+const allComponents = ["battery", "motor", "fuel", "turbine","transmission","propeller"];
+
 
 /* ---------------------------------------------------------------------------------------------------- */
 /* -----------------------------------------Event Listeners--------------------------------------------- */
 /* ---------------------------------------------------------------------------------------------------- */
 
-components.forEach(id => {
+basicComponents.forEach(id => {
     const el = document.getElementById(id);
 
 
     el.addEventListener("click", () => {
         if (queryMode) {
-            //handleQueryClick(el, id);
+            
         } else {
             el.classList.toggle("active"); // toggle green fill
             requestAnimationFrame(updateLineFlow);
+        }
+    });
+});
+
+allComponents.forEach(id => {
+    const el = document.getElementById(id);
+
+
+    el.addEventListener("click", () => {
+        if (queryMode) {
+            handleQueryClick(el, id)
+        } else {
         }
     });
 });
@@ -85,7 +101,7 @@ transmissionSlider.addEventListener("input", () => {
 clearButton.addEventListener("click", () => {
     if (queryMode) return;
     // Turn off all components
-    components.forEach(id => {
+    basicComponents.forEach(id => {
         document.getElementById(id).classList.remove("active");
     });
 
@@ -726,4 +742,60 @@ function updateLineFlow() {
     }
 
 
+}
+
+
+
+
+function handleQueryClick(el, id) {
+
+    if (activeInfoBox && queryComponent === id) {
+        activeInfoBox.remove();
+        activeInfoBox = null;
+        queryComponent = "";
+        queryDescription = "";
+        return;
+    }
+
+    if (activeInfoBox) {
+        activeInfoBox.remove();
+        activeInfoBox = null;
+    }
+
+    const descriptions = {
+        fuel: ["Fuel", "Jet-A or hydrogen fuel used by the turbine to generate shaft power."],
+        turbine: ["Turbine", "Converts fuel energy into mechanical shaft power."],
+        transmission: ["Transmission", "Transfers power between the turbine and battery systems."],
+        battery: ["Battery", "Stores electrical energy for propulsion or recharging."],
+        motor: ["Electric Motor", "Converts electrical energy into mechanical thrust power."],
+        propeller: ["Propeller", "Generates thrust using power from the turbine or motor."],
+    };
+
+    const [title, text] = descriptions[id];
+    queryComponent = id;
+    queryTitle = title
+    queryDescription = text;
+
+    activeStatus = ""
+
+    if (el.classList.contains("active")){
+        activeStatus = "Active"
+    } else {
+        activeStatus = "Inactive"
+    }
+
+    const bbox = el.getBoundingClientRect();
+    const infoBox = document.createElement("div");
+    infoBox.className = "query-element-tooltip";
+    infoBox.style.position = "absolute";
+    infoBox.style.left = `${bbox.left + window.scrollX + 110}px`;
+    infoBox.style.top = `${bbox.top + window.scrollY - 50}px`;
+    infoBox.style.zIndex = 9999;infoBox.innerHTML = `
+    <strong>${queryTitle}</strong><br>
+    <span class="query-element-status ${activeStatus.toLowerCase()}">Status: <em>${activeStatus}</em></span><br>
+    <span class="query-element-text">${queryDescription}</span>
+  `;
+
+    document.body.appendChild(infoBox);
+    activeInfoBox = infoBox;
 }
