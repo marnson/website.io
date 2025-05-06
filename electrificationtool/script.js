@@ -571,7 +571,7 @@ function updateLineFlow() {
 
     if (fuelOn && turbineOn && transmissionFlag === 0 && !motorOn) {
         archName.textContent = "Architecture: Conventional";
-        archDesc.textContent = "A gas turbine, powered by jet fuel, spins a fan or a propeller. This is called a \"conventional\" architecture because it is the most commonnly used one in aircraft today.";
+        archDesc.textContent = "A gas turbine, powered by jet fuel, spins a fan or a propeller. This is called a \"conventional\" architecture because it is the most commonly used one in aircraft today.";
 
 
     } else if (fuelOn && turbineOn && transmissionFlag === 1 && batteryOn) {
@@ -644,7 +644,7 @@ function updateLineFlow() {
         }
     } else if (fuelOn && turbineOn && transmissionFlag === -1 && !motorClick && turbineBypassOn) {
         archName.textContent = "Architecture: Conventional";
-        archDesc.textContent = "A gas turbine, powered by jet fuel, spins a fan or a propeller. This is called a \"conventional\" architecture because it is the most commonnly used one in aircraft today.";
+        archDesc.textContent = "A gas turbine, powered by jet fuel, spins a fan or a propeller. This is called a \"conventional\" architecture because it is the most commonly used one in aircraft today.";
         archNote.innerHTML += "<br> &bull; Transmission is adding unneccessary weight to the propulsion system."
         if (batteryOn) {
             archNote.innerHTML += "<br> &bull; Battery is adding unneccessary weight to the propulsion system."
@@ -666,7 +666,7 @@ function updateLineFlow() {
         archNote.innerHTML += "<br> &bull; In this architecture, the transmission acts as an electric motor."
     } else if (fuelOn && turbineOn && !batteryOn && transmissionFlag === 1) {
         archName.textContent = "Architecture: Conventional";
-        archDesc.textContent = "A gas turbine, powered by jet fuel, spins a fan or a propeller. This is called a \"conventional\" architecture because it is the most commonnly used one in aircraft today.";
+        archDesc.textContent = "A gas turbine, powered by jet fuel, spins a fan or a propeller. This is called a \"conventional\" architecture because it is the most commonly used one in aircraft today.";
 
 
 
