@@ -1,6 +1,57 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="refresh" content="0; url=https://www.geo3550.org/" />
-  </head>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            color: white;
+        }
+
+        .link-container {
+            width: 90%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        a {
+            text-decoration: none;
+            display: block;
+            background: rgba(0,0,0,0.6);
+            padding: 14px;
+            text-align: center;
+            border-radius: 8px;
+            font-size: 18px;
+            color: white;
+        }
+
+        a:hover {
+            background: rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body style="background-image: url('YOUR_IMAGE.jpg');">
+
+    <div class="link-container">
+        <a href="https://example.com">Project One</a>
+        <a href="https://example.com">Project Two</a>
+        <a href="https://example.com">Resume</a>
+    </div>
+
+</body>
 </html>
